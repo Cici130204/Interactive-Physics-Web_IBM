@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fisika Interaktif - Cici</title>
+  <style>
+    /* --- FONT --- */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    /* --- RESET & GLOBAL --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    /* --- TEMA BARU: AURORA TECH (GONG ABIS) --- */
+    body {
+      color: #fff;
+      overflow-x: hidden;
+      /* UPGRADE: Latar belakang gradien animasi SPEKTAKULER! */
+      background: linear-gradient(135deg, #0f0c29, #302b63, #ff00ff, #00ffff, #39FF14);
+      background-size: 500% 500%; /* Lebih besar untuk pergerakan halus */
+      animation: gradientShift 25s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- NAVIGASI (MODERN "REVEAL") --- */
+    nav {
+      width: 100%;
+      background-color: rgba(10, 5, 20, 0.5); /* Kaca ungu */
+      padding: 20px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+    nav ul { list-style: none; display: flex; gap: 40px; }
+    nav ul li {
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s ease;
+      font-size: 0.95em;
+      position: relative; /* Diperlukan untuk ::after */
+    }
+
+    /* --- CSS QUIZ INTERAKTIF --- */
+    .quiz-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .q-nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9em;
+    }
+    .q-nav-btn:hover, .q-nav-btn.active {
+      background: #39FF14; /* Lime */
+      color: #000;
+      box-shadow: 0 0 15px #39FF14;
+      border-color: #39FF14;
+      font-weight: bold;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+
+    .option-btn {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(0, 255, 255, 0.3); /* Cyan border */
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 1em;
+      transition: 0.3s;
+    }
+    .option-btn:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-color: #00ffff;
+      transform: translateX(5px);
+    }
+    
+    /* Warna Jawaban Benar/Salah */
+    .option-btn.correct {
+      background: rgba(57, 255, 20, 0.2) !important;
+      border-color: #39FF14 !important;
+      box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+    }
+    .option-btn.wrong {
+      background: rgba(255, 0, 80, 0.2) !important;
+      border-color: #ff0050 !important;
+      opacity: 0.7;
+    }
+
+    .feedback-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      font-weight: bold;
+    }
+    /* UPGRADE: Efek underline "Reveal" */
+    nav ul li::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background-color: #39FF14; /* Electric Lime */
+      transition: width 0.3s ease;
+    }
+    nav ul li:hover::after {
+      width: 100%;
+    }
+    nav ul li:hover {
+      color: #39FF14; /* Ganti hover ke Lime */
+      transform: scale(1.1);
+      text-shadow: 0 0 10px #39FF14;
+    }
+    /* --- CSS LATIHAN SOAL (FULL) --- */
+    .quiz-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+    
+    .q-nav-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ddd;
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    .q-nav-btn:hover, .q-nav-btn.active {
+      background: #39FF14;
+      color: #000;
+      box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+      border-color: #39FF14;
+      transform: scale(1.05);
+    }
+
+    /* Header Soal */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      color: #00ffff;
+      font-family: monospace;
+      font-size: 1.1em;
+    }
+
+    .question-text {
+      color: #fff;
+      margin-bottom: 25px;
+      font-size: 1.2em;
+      line-height: 1.5;
+      min-height: 60px;
+    }
+
+    /* Grid Pilihan Jawaban */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+
+    .option-btn {
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(0, 255, 255, 0.2);
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 1em;
+      transition: 0.3s;
+    }
+    .option-btn:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-color: #00ffff;
+    }
+    
+    /* Efek Benar/Salah */
+    .option-btn.correct {
+      background: rgba(57, 255, 20, 0.2) !important;
+      border-color: #39FF14 !important;
+      box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+    }
+    .option-btn.wrong {
+      background: rgba(255, 0, 80, 0.2) !important;
+      border-color: #ff0050 !important;
+      opacity: 0.6;
+    }
+
+    /* Panel Penjelasan */
+    .feedback-panel {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border-left: 4px solid #fff;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+    .big-score {
+      font-size: 5em;
+      font-weight: bold;
+      color: #00ffff;
+      text-shadow: 0 0 30px #00ffff, 0 0 60px #39FF14;
+      margin: 20px 0;
+    }
+    
+    /* Rumus Neon */
+    .math-eq {
+      background: rgba(0, 0, 0, 0.6);
+      border-left: 4px solid #00ffff;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      color: #00ffff;
+      font-size: 1.1em;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+    }
+    
+    /* Kotak Fakta */
+    .fun-fact {
+      background: rgba(57, 255, 20, 0.1);
+      border: 1px dashed #39FF14;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-size: 0.9em;
+      color: #e0e0e0;
+    }
+
+    /* Tombol Pintas ke Simulasi */
+    button.try-btn {
+      background: linear-gradient(45deg, #00ffff, #302b63);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+    button.try-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 255, 255, 0.6);
+    }
+
+    /* --- SECTION (EFEK FADE-IN) --- */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      display: none; /* Diatur oleh JS */
+      background: none;
+    }
+
+    /* --- HOME (GLOW MAKSIMAL) --- */
+    #home h1 {
+      font-size: 3.8em;
+      font-weight: 700;
+      color: #fff;
+      /* UPGRADE: Tiga Warna Glow! */
+      text-shadow: 0 0 10px #fff, 0 0 25px #00ffff, 0 0 45px #ff00ff, 0 0 60px #39FF14;
+    }
+    #home p { font-size: 1.2em; margin-top: 10px; color: #eee; }
+    #home button {
+      margin-top: 30px;
+      background: #39FF14; /* Electric Lime */
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.1em;
+      box-shadow: 0 0 25px #39FF14;
+      animation: pulse 1.5s infinite;
+      transition: 0.3s ease;
+    }
+    #home button:hover {
+      background: #fff;
+      box-shadow: 0 0 35px #fff, 0 0 50px #39FF14;
+      transform: scale(1.05);
+      animation: none;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 25px #39FF14; }
+      50% { transform: scale(1.05); box-shadow: 0 0 40px #39FF14; }
+      100% { transform: scale(1); box-shadow: 0 0 25px #39FF14; }
+    }
+    /* --- CSS KONTAK (VERSI STABIL) --- */
+    .contact-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      width: 100%;
+      max-width: 900px;
+      justify-content: center;
+    }
+
+    /* Info Kiri */
+    .contact-info {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(255, 255, 255, 0.05); /* Kaca Transparan */
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+    .info-item:hover {
+      transform: translateX(10px);
+      color: #39FF14; /* Hijau Neon */
+    }
+
+    /* Form Kanan */
+    .contact-form-box {
+      flex: 1.5;
+      min-width: 300px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      border-radius: 15px;
+      border: 1px solid #39FF14;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .input-group label {
+      display: block;
+      color: #00ffff;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .input-group input, .input-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+    }
+
+    .input-group input:focus, .input-group textarea:focus {
+      outline: none;
+      border-color: #39FF14;
+      box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+    }
+
+    .kirim-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #39FF14, #008f06);
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      font-weight: bold;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .kirim-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #39FF14;
+    }
+
+    /* --- TOMBOL PILIH SIMULASI (GLOW LEBIH GONG) --- */
+    .sim-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-top: 30px; }
+    .sim-item {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      padding: 25px 35px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #fff;
+      min-width: 220px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .sim-item:hover {
+      background: rgba(0, 255, 255, 0.2);
+      border-color: #00ffff;
+      transform: translateY(-10px);
+      /* UPGRADE: Tiga Warna Glow Saat Hover */
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 
+                  0 0 20px rgba(0, 255, 255, 0.7), /* Cyan */
+                  0 0 30px rgba(57, 255, 20, 0.5); /* Lime */
+    }
+
+    /* --- KONTEN SIMULASI (FITUR "GONG" UTAMA) --- */
+    #simContainer { margin-top: 40px; display: none; text-align: center; }
+    
+    /* UPGRADE SPEKTAKULER: BINGKAI CANVAS ANIMASI! */
+    #canvas-wrapper {
+      margin-top: 20px;
+      border-radius: 12px; /* Radius luar */
+      padding: 3px; /* Ketebalan 'bingkai' */
+      /* Gradien untuk bingkai */
+      background: linear-gradient(45deg, #00ffff, #ff00ff, #39FF14, #00ffff);
+      background-size: 300% 300%;
+      /* Animasi pergerakan gradien di bingkai */
+      animation: animatedBorder 4s linear infinite;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.5), 0 0 40px rgba(255, 0, 255, 0.3);
+    }
+    @keyframes animatedBorder {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 300% 300%; }
+    }
+    
+    #canvas {
+      background: #00000a; /* Angkasa gelap */
+      border-radius: 10px; /* Radius dalam (harus lebih kecil dari padding) */
+      display: block; /* Penting agar pas di dalam wrapper */
+      margin-top: 0; /* Reset */
+      box-shadow: none; /* Pindahkan shadow ke wrapper */
+      border: none; /* Pindahkan border ke wrapper */
+      cursor: crosshair;
+    }
+    
+    .controls {
+      margin-top: 20px;
+      background: rgba(10, 5, 20, 0.7);
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+      color: #fff;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .controls label { display: block; margin: 8px 0; }
+    input[type="range"] { width: 150px; vertical-align: middle; margin-left: 5px; }
+    
+    button.sim-btn {
+      background-color: #39FF14; /* Electric Lime */
+      color: #000;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 5px;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+    button.sim-btn:hover {
+      background-color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #fff;
+    }
+    .controls input[type="radio"] { margin-right: 5px; }
+    .controls .radio-group { margin-bottom: 10px; }
+
+    /* --- KONTEN TEORI (HOVER "AURORA") --- */
+    .content-box { 
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px); 
+      padding: 25px; 
+      border-radius: 10px; 
+      margin-top: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+      max-width: 800px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .content-box:hover {
+      border-color: #39FF14; /* Hover Lime */
+      box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+    }
+    .content-box p { margin-bottom: 15px; line-height: 1.6; color: #eee;}
+    .content-box h2 { color: #00ffff; } /* Judul Cyan */
+    .content-box button { background: #00ffff; color: #000; border:none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+    hr { margin: 20px 0; border: 1px solid #fff3; }
+    
+    /* --- FOOTER --- */
+    footer { text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.1); font-size: 14px; color: #aaa; margin-top: 50px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li onclick="showSection('home')">🏠 Home</li>
+      <li onclick="showSection('simulasi')">🧮 Simulasi</li>
+      <li onclick="showSection('teori')">📘 Teori</li>
+      <li onclick="showSection('latihan')">🧩 Latihan</li>
+      <li onclick="showSection('tentang')">ℹ️ Tentang</li>
+      <li onclick="showSection('kontak')">📩 Kontak</li>
+    </ul>
+  </nav>
+
+  <section id="home">
+    <h1>Selamat Datang di Dunia Fisika Interaktif</h1>
+    <p>Belajar konsep fisika melalui visualisasi dan simulasi yang seru dan mudah dipahami!</p>
+    <button onclick="showSection('simulasi')">Mulai Simulasi 🚀</button>
+  </section>
+
+  <section id="simulasi">
+    <h1>Pilih Simulasi</h1>
+    <div class="sim-list">
+      <div class="sim-item" onclick="startSim('parabola')">⚙️ Gerak Parabola</div>
+      <div class="sim-item" onclick="startSim('pegas')">🎢 Osilasi Pegas (Hukum Hooke)</div>
+      <div class="sim-item" onclick="startSim('gravitasi')">🌌 Gaya Gravitasi Antar Benda</div>
+      <div class="sim-item" onclick="startSim('orbit')">🪐 Simulasi Orbit Planet</div>
+      <div class="sim-item" onclick="startSim('panas')">🌡️ Perpindahan Panas (Konduksi)</div>
+      <div class="sim-item" onclick="startSim('gelombang')">🌊 Gelombang Air</div>
+      <div class="sim-item" onclick="startSim('listrik')">🔋 Listrik & Magnet</div>
+    </div>
+
+    <div id="simContainer" style="display:none;">
+      <h2 id="simTitle"></h2>
+      
+      <div id="canvas-wrapper">
+        <canvas id="canvas" width="900" height="400"></canvas>
+      </div>
+      
+      <div id="parabolaControls" class="controls" style="display: none;">
+        <label>Kecepatan (m/s): <span id="vVal">20</span></label>
+        <input type="range" id="velocity" min="5" max="60" value="20">
+        <label>Sudut (°): <span id="aVal">45</span></label>
+        <input type="range" id="angle" min="10" max="80" value="45">
+        <button class="sim-btn" id="startParabola">Jalankan</button>
+      </div>
+      <div id="pegasControls" class="controls" style="display: none;">
+        <label>Massa (kg): <span id="mVal">2</span></label>
+        <input type="range" id="mass" min="0.5" max="5" value="2" step="0.1">
+        <label>Kekakuan (k): <span id="kVal">5</span></label>
+        <input type="range" id="stiffness" min="1" max="10" value="5" step="0.5">
+        <label>Simpangan Awal (cm): <span id="xVal">100</span></label>
+        <input type="range" id="displacement" min="20" max="150" value="100" step="10">
+        <button class="sim-btn" id="startPegas">Jalankan</button>
+      </div>
+      <div id="gravitasiControls" class="controls" style="display: none;">
+        <h3>Benda 1</h3>
+        <label>Massa (M): <span id="m1Val">5000</span></label>
+        <input type="range" id="mass1" min="1000" max="10000" value="5000" step="500">
+        <label>Kecepatan Vertikal (Vy): <span id="vy1Val">0</span></label>
+        <input type="range" id="vy1" min="-10" max="10" value="0" step="1">
+        <h3>Benda 2</h3>
+        <label>Massa (M): <span id="m2Val">1000</span></label>
+        <input type="range" id="mass2" min="100" max="5000" value="1000" step="100">
+        <label>Kecepatan Horizontal (Vx): <span id="vx2Val">0</span></label>
+        <input type="range" id="vx2" min="-10" max="10" value="0" step="1">
+        <button class="sim-btn" id="startGravitasi">Mulai Simulasi</button>
+        <button class="sim-btn" id="resetGravitasi">Reset Posisi</button>
+      </div>
+      <div id="orbitControls" class="controls" style="display: none;">
+        <h3>Bintang (Pusat)</h3>
+        <label>Massa Bintang (M): <span id="sunMassVal">10000</span></label>
+        <input type="range" id="sunMass" min="5000" max="20000" value="10000" step="1000">
+        <h3>Planet</h3>
+        <label>Jarak Awal (r): <span id="planetDistVal">150</span></label>
+        <input type="range" id="planetDist" min="50" max="200" value="150" step="10">
+        <label>Kecepatan Awal (v): <span id="planetVelVal">5</span></label>
+        <input type="range" id="planetVel" min="0" max="15" value="5" step="0.5">
+        <button class="sim-btn" id="startOrbit">Luncurkan Planet</button>
+        <button class="sim-btn" id="resetOrbit">Reset</button>
+      </div>
+      <div id="panasControls" class="controls" style="display: none;">
+        <div class="radio-group">
+          <b>Alat (Klik & Seret):</b><br>
+          <label><input type="radio" name="tool" value="heat" checked> 🔥 Sumber Panas</label>
+          <label><input type="radio" name="tool" value="cold"> ❄️ Sumber Dingin</label>
+        </div>
+        <label>Konduktivitas Termal (k): <span id="kPanasVal">0.2</span></label>
+        <input type="range" id="kPanas" min="0.05" max="0.5" value="0.2" step="0.01">
+        <button class="sim-btn" id="resetPanas">Reset Suhu</button>
+      </div>
+      <div id="gelombangControls" class="controls" style="display: none;">
+        <label>Redaman (Damping): <span id="dampVal">0.98</span></label>
+        <input type="range" id="damping" min="0.90" max="0.999" value="0.98" step="0.001">
+        <p style="font-size: 0.9em; margin-top: 10px;">Klik atau seret pada air untuk membuat gelombang!</p>
+      </div>
+      <div id="listrikControls" class="controls" style="display: none;">
+        <div class="radio-group">
+          <b>Jenis Partikel:</b><br>
+          <label><input type="radio" name="charge" value="1" checked> 🔴 Positif (Positron)</label>
+          <label><input type="radio" name="charge" value="-1"> 🔵 Negatif (Elektron)</label>
+        </div>
+        <label>Medan Magnet (B): <span id="bVal">5</span></label>
+        <input type="range" id="bField" min="0" max="10" value="5" step="0.5">
+        <label>Massa Partikel (m): <span id="mVal_L">5</span></label>
+        <input type="range" id="mass_L" min="1" max="10" value="5" step="1">
+        <button class="sim-btn" id="clearParticles">Bersihkan Canvas</button>
+        <p style="font-size: 0.9em; margin-top: 10px;">Klik & seret di layar untuk 'melempar' partikel!</p>
+      </div>
+      
+    </div>
+  </section>
+
+  <section id="teori">
+    <h1>📘 Teori Fisika Dasar</h1>
+    <p style="margin-bottom: 20px; color: #aaa;">Klik judul materi untuk membaca detailnya.</p>
+
+    <div class="content-box" onclick="toggleTheory('t-parabola')">
+      <div class="theory-header">
+        <h2>🚀 Gerak Parabola</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-parabola" class="theory-content">
+        <p>Gerak parabola adalah perpaduan antara Gerak Lurus Beraturan (GLB) pada sumbu horizontal dan Gerak Lurus Berubah Beraturan (GLBB) pada sumbu vertikal akibat gravitasi.</p>
+        <div class="math-eq">
+          X = v₀ · cos(θ) · t <br>
+          Y = v₀ · sin(θ) · t - ½ · g · t²
+        </div>
+        <div class="fun-fact">
+          💡 <b>Tahukah Kamu?</b> Sudut peluncuran 45° menghasilkan jarak terjauh, sedangkan sudut 90° membuat benda berada di udara paling lama.
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('parabola')">Coba Simulasi Parabola ➜</button>
+      </div>
+    </div>
+
+    <div class="content-box" onclick="toggleTheory('t-pegas')">
+      <div class="theory-header">
+        <h2>🎢 Osilasi Pegas (Hukum Hooke)</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-pegas" class="theory-content">
+        <p>Hukum Hooke menyatakan bahwa gaya pemulih pada pegas sebanding dengan pertambahan panjangnya, namun berlawanan arah.</p>
+        <div class="math-eq">F = -k · Δx</div>
+        <p><small>k = Konstanta pegas (kekakuan), Δx = Simpangan.</small></p>
+        <div class="fun-fact">
+          💡 <b>Energi:</b> Di titik setimbang, kecepatan benda maksimum (Energi Kinetik maks). Di simpangan terjauh, kecepatan nol (Energi Potensial maks).
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('pegas')">Coba Simulasi Pegas ➜</button>
+      </div>
+    </div>
+
+    <div class="content-box" onclick="toggleTheory('t-gravitasi')">
+      <div class="theory-header">
+        <h2>🌌 Gaya Gravitasi Newton</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-gravitasi" class="theory-content">
+        <p>Setiap benda bermassa di alam semesta saling tarik-menarik. Gaya ini sebanding dengan perkalian massa keduanya dan berbanding terbalik dengan kuadrat jaraknya.</p>
+        <div class="math-eq">F = G · (m₁ · m₂) / r²</div>
+        <div class="fun-fact">
+          💡 <b>Fakta Unik:</b> Gaya gravitasi sebenarnya sangat lemah. Sebuah magnet kecil kulkas bisa mengalahkan gaya gravitasi seluruh Bumi saat mengangkat paku besi!
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('gravitasi')">Coba Simulasi Gravitasi ➜</button>
+      </div>
+    </div>
+
+    <div class="content-box" onclick="toggleTheory('t-orbit')">
+      <div class="theory-header">
+        <h2>🪐 Orbit & Hukum Kepler</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-orbit" class="theory-content">
+        <p>Orbit terjadi karena keseimbangan antara inersia benda (keinginan bergerak lurus) dan gaya gravitasi (yang menariknya ke pusat).</p>
+        <div class="math-eq">v_orbit = √(G·M / r)</div>
+        <div class="fun-fact">
+          💡 <b>Jatuh Tanpa Henti:</b> Astronot di ISS sebenarnya sedang "jatuh" ke arah Bumi, tapi karena kecepatan horizontalnya sangat tinggi, mereka selalu meleset dari permukaan Bumi (mengorbit).
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('orbit')">Coba Simulasi Orbit ➜</button>
+      </div>
+    </div>
+
+    <div class="content-box" onclick="toggleTheory('t-panas')">
+      <div class="theory-header">
+        <h2>🔥 Perpindahan Panas (Konduksi)</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-panas" class="theory-content">
+        <p>Konduksi adalah perpindahan panas melalui zat perantara tanpa disertai perpindahan partikel zat tersebut. Energi berpindah lewat getaran atom.</p>
+        <div class="math-eq">H = k · A · ΔT / L</div>
+        <div class="fun-fact">
+          💡 <b>Kenapa Logam Dingin?</b> Saat menyentuh besi, tanganmu terasa dingin bukan karena suhu besi rendah, tapi karena besi menyerap panas dari tanganmu dengan sangat cepat (konduktor).
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('panas')">Coba Simulasi Panas ➜</button>
+      </div>
+    </div>
+
+    <div class="content-box" onclick="toggleTheory('t-gelombang')">
+      <div class="theory-header">
+        <h2>🌊 Gelombang Mekanik</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-gelombang" class="theory-content">
+        <p>Gelombang adalah getaran yang merambat membawa energi. Pada permukaan air, gelombang merupakan gabungan gerak transversal dan longitudinal.</p>
+        <div class="math-eq">v = λ · f</div>
+        <p><small>v = Cepat rambat, λ = Panjang gelombang, f = Frekuensi.</small></p>
+        <div class="fun-fact">
+          💡 <b>Damping:</b> Di simulasi, kamu melihat gelombang perlahan hilang. Ini disebut redaman (damping) akibat gesekan internal air.
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('gelombang')">Coba Simulasi Gelombang ➜</button>
+      </div>
+    </div>
+
+    <div class="content-box" onclick="toggleTheory('t-listrik')">
+      <div class="theory-header">
+        <h2>🧲 Gaya Lorentz</h2>
+        <span class="arrow-icon">▼</span>
+      </div>
+      <div id="t-listrik" class="theory-content">
+        <p>Muatan listrik yang bergerak di dalam medan magnet akan mengalami gaya dorong yang membelokkan arahnya. Arah gaya ini mengikuti Aturan Tangan Kanan.</p>
+        <div class="math-eq">F = q · v · B · sin(θ)</div>
+        <div class="fun-fact">
+          💡 <b>Aurora:</b> Cahaya Aurora di kutub bumi terjadi karena partikel bermuatan dari matahari dibelokkan oleh medan magnet bumi dan menabrak atmosfer!
+        </div>
+        <button class="try-btn" onclick="event.stopPropagation(); jumpToSim('listrik')">Coba Simulasi Listrik ➜</button>
+      </div>
+    </div>
+  </section>
+  <section id="latihan">
+    <h1>🧠 Tantangan Fisika</h1>
+    <p style="color: #aaa; margin-bottom: 20px;">Pilih topik di bawah untuk memulai misi!</p>
+
+    <div class="quiz-nav">
+      <button class="q-nav-btn" onclick="startQuiz('parabola')">🚀 Parabola</button>
+      <button class="q-nav-btn" onclick="startQuiz('pegas')">🎢 Pegas</button>
+      <button class="q-nav-btn" onclick="startQuiz('gravitasi')">🌌 Gravitasi</button>
+      <button class="q-nav-btn" onclick="startQuiz('orbit')">🪐 Orbit</button>
+      <button class="q-nav-btn" onclick="startQuiz('panas')">🔥 Panas</button>
+      <button class="q-nav-btn" onclick="startQuiz('gelombang')">🌊 Gelombang</button>
+      <button class="q-nav-btn" onclick="startQuiz('listrik')">🧲 Listrik</button>
+    </div>
+
+    <div id="quiz-box" class="content-box" style="min-height: 300px; position: relative;">
+      
+      <div id="quiz-start-msg" style="text-align: center; padding: 40px;">
+        <h2 style="color: #00ffff;">Siap Menguji Pengetahuanmu?</h2>
+        <p>Klik salah satu tombol topik di atas untuk memulai latihan soal.</p>
+      </div>
+
+      <div id="quiz-active" style="display: none; text-align: left;">
+        <div class="quiz-header">
+          <span id="q-progress">Soal 1/3</span>
+          <span id="q-score-realtime">Skor: 0</span>
+        </div>
+
+        <h3 id="q-text" class="question-text">Loading...</h3>
+
+        <div id="q-options" class="options-grid"></div>
+
+        <div id="q-feedback" class="feedback-panel" style="display: none;">
+          <p id="q-explanation"></p>
+          <button id="q-next-btn" class="try-btn" onclick="nextQuestion()">Lanjut ➜</button>
+        </div>
+      </div>
+
+      <div id="quiz-finish" style="display: none; text-align: center; padding: 20px;">
+        <h1 style="font-size: 4em; margin-bottom: 10px;">🏆</h1>
+        <h2 style="color: #39FF14;">Misi Selesai!</h2>
+        <p>Skor Akhir Kamu:</p>
+        <div id="final-score-display" class="big-score">0</div>
+        <button class="try-btn" onclick="restartQuiz()">Main Lagi ↻</button>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="tentang">
+    <h1>ℹ️ Tentang Fisika Interaktif</h1>
+    <p style="color: #aaa; margin-bottom: 30px;">Mengubah rumus rumit menjadi visualisasi yang hidup.</p>
+
+    <div class="content-box about-container">
+      
+      <div class="about-left">
+        <h2 style="color: #39FF14; margin-bottom: 15px;">Visi & Misi Kami</h2>
+        <p>
+          <b>Fisika Interaktif</b> adalah proyek edukasi modern yang dirancang untuk menjembatani kesenjangan antara teori buku teks yang abstrak dengan pemahaman konsep yang nyata.
+        </p>
+        <p>
+          Kami percaya bahwa fisika bukan sekadar menghafal rumus, tetapi memahami bagaimana alam semesta bekerja. Dengan bantuan teknologi simulasi berbasis web, kami "menghidupkan" persamaan matematika agar dapat dimainkan dan diamati secara langsung.
+        </p>
+        
+        <br>
+        <h3 style="color: #00ffff; margin-bottom: 10px;">Teknologi di Balik Layar:</h3>
+        <div class="tech-stack">
+          <span class="tech-badge">HTML5 Canvas</span>
+          <span class="tech-badge">Vanilla JavaScript</span>
+          <span class="tech-badge">CSS3 Animations</span>
+          <span class="tech-badge">Physics Engine Logic</span>
+        </div>
+      </div>
+
+      <div class="about-right">
+        <div class="feature-card">
+          <span style="font-size: 2em;">🎮</span>
+          <div>
+            <b>Belajar Sambil Bermain</b>
+            <p style="font-size: 0.85em; margin: 5px 0 0;">Simulasi interaktif yang memungkinkan eksperimen tanpa risiko alat rusak.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <span style="font-size: 2em;">🧠</span>
+          <div>
+            <b>Melatih Logika (HOTS)</b>
+            <p style="font-size: 0.85em; margin: 5px 0 0;">Soal latihan yang dirancang untuk analisis, bukan sekadar hitungan.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <span style="font-size: 2em;">🌐</span>
+          <div>
+            <b>Akses Mudah & Gratis</b>
+            <p style="font-size: 0.85em; margin: 5px 0 0;">Dapat diakses kapan saja melalui browser tanpa instalasi aplikasi berat.</p>
+          </div>
+        </div>
+
+        <div class="creator-profile">
+          <p>Dikembangkan dengan ❤️ oleh:</p>
+          <strong style="font-size: 1.2em; color: #fff;">Cici Citra Sahara</strong>
+          <p style="font-size: 0.8em; color: #aaa;">Physics Enthusiast & Web Developer</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+ <section id="kontak">
+    <h1>📩 Hubungi Kami</h1>
+    <p style="color: #aaa; margin-bottom: 30px;">Punya ide simulasi baru? Kirim pesanmu di bawah!</p>
+
+    <div class="contact-container">
+      
+      <div class="contact-info">
+        <h3 style="color: #39FF14; margin-bottom: 20px;">Jejaring Sosial</h3>
+        
+        <div class="info-item">
+          <span class="icon">📧</span>
+          <span>cici22001@mail.unpad.ac.id</span>
+        </div>
+        
+        <div class="info-item">
+          <span class="icon">📷</span>
+          <span>@cici.citria</span>
+        </div>
+        
+        <div class="info-item">
+          <span class="icon">🐙</span>
+          <span>https://github.com/Cici130204</span>
+        </div>
+
+        <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
+          <p style="font-style: italic; color: #00ffff;">"Fisika itu seru, kodenya yang bikin pusing."</p>
+        </div>
+      </div>
+
+      <div class="contact-form-box">
+        <form onsubmit="kirimPesan(event)">
+          <div class="input-group">
+            <label>Nama Kamu</label>
+            <input type="text" placeholder="Albert Einstein" required>
+          </div>
+
+          <div class="input-group">
+            <label>Pesan / Saran</label>
+            <textarea rows="4" placeholder="Tulis saranmu di sini..." required></textarea>
+          </div>
+
+          <button type="submit" id="btn-kirim" class="kirim-btn">🚀 Kirim Pesan</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>© 2025 Fisika Interaktif by Cici Citra Sahara</footer>
+
+  <script>
+    // --- KONTROL NAVIGASI (Sama, sudah bagus) ---
+    let currentAnimationId = null; 
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+
+    const simContainer = document.getElementById("simContainer");
+    const simTitle = document.getElementById("simTitle");
+
+    function showSection(id) {
+      if (currentAnimationId) { cancelAnimationFrame(currentAnimationId); currentAnimationId = null; }
+      document.querySelectorAll("section").forEach(sec => {
+        sec.style.opacity = "0"; sec.style.transform = "translateY(20px)";
+        setTimeout(() => { sec.style.display = "none"; }, 500); 
+      });
+      const secToShow = document.getElementById(id);
+      setTimeout(() => {
+          secToShow.style.display = "flex";
+          setTimeout(() => { secToShow.style.opacity = "1"; secToShow.style.transform = "translateY(0)"; }, 10);
+      }, 500); 
+      refreshCanvas();
+      window.scrollTo(0, 0);
+    }
+    
+    const homeSec = document.getElementById("home");
+    homeSec.style.display = "flex"; homeSec.style.opacity = "1"; homeSec.style.transform = "translateY(0)";
+
+    // FUNGSI PENTING: Refresh Canvas
+    function refreshCanvas() {
+        if (canvas.parentNode) {
+            // !! PENTING !!
+            // Wrapper canvas SEKARANG adalah #canvas-wrapper
+            const wrapper = document.getElementById('canvas-wrapper');
+            const newCanvas = canvas.cloneNode(true);
+            wrapper.replaceChild(newCanvas, canvas); // Ganti canvas di dalam wrapper
+            canvas = newCanvas; // Update referensi global
+            ctx = canvas.getContext('2d');
+        }
+    }
+    // --- SISTEM KUIS INTERAKTIF LENGKAP ---
+
+    // 1. BANK SOAL (Data Soal)
+    const quizDB = {
+      'parabola': [
+        { q: "Sudut elevasi berapa yang menghasilkan jarak terjauh (X maks)?", options: ["30°", "45°", "60°", "90°"], ans: 1, expl: "Sudut 45° memberikan nilai sin(2θ) maksimum." },
+        { q: "Di titik tertinggi lintasan, kecepatan vertikal benda adalah...", options: ["Nol", "Maksimum", "Tetap", "Tak Terhingga"], ans: 0, expl: "Benda berhenti sejenak naik-turun di puncak." },
+        { q: "Gerak parabola adalah perpaduan antara...", options: ["GLB & GLB", "GLBB & GLBB", "GLB & GLBB", "Diam & Gerak"], ans: 2, expl: "GLB di sumbu-X dan GLBB di sumbu-Y." }
+      ],
+      'pegas': [
+        { q: "Hukum Hooke: F = -k·Δx. Tanda minus artinya...", options: ["Gaya gesek", "Arah gaya berlawanan simpangan", "Konstanta negatif", "Pegas putus"], ans: 1, expl: "Gaya pemulih selalu melawan arah tarikan/tekanan." },
+        { q: "Energi Potensial pegas maksimum saat...", options: ["Di titik seimbang", "Di simpangan terjauh", "Saat diam", "Saat bergerak cepat"], ans: 1, expl: "Simpangan paling jauh = Energi potensial paling besar." },
+        { q: "Satuan konstanta pegas (k) adalah...", options: ["Newton", "Joule", "N/m", "kg/m"], ans: 2, expl: "Gaya (N) dibagi Pertambahan Panjang (m)." }
+      ],
+      'gravitasi': [
+        { q: "Jika jarak benda dijauhkan 2x lipat, gaya gravitasi jadi...", options: ["2x lipat", "4x lipat", "1/2 kalinya", "1/4 kalinya"], ans: 3, expl: "Gaya berbanding terbalik dengan kuadrat jarak (1/2² = 1/4)." },
+        { q: "Besar gaya gravitasi bergantung pada...", options: ["Warna benda", "Massa & Jarak", "Suhu benda", "Kecepatan"], ans: 1, expl: "Rumus: F = G(m1.m2)/r²." },
+        { q: "Nilai G (Konstanta Gravitasi) berlaku di...", options: ["Bumi saja", "Tata Surya saja", "Seluruh Alam Semesta", "Laboratorium"], ans: 2, expl: "G adalah tetapan universal." }
+      ],
+      'orbit': [
+        { q: "Lintasan planet mengelilingi matahari berbentuk...", options: ["Lingkaran", "Elips", "Kotak", "Garis"], ans: 1, expl: "Hukum I Kepler: Lintasan planet berbentuk elips." },
+        { q: "Planet bergerak paling cepat saat...", options: ["Dekat Matahari (Perihelion)", "Jauh dari Matahari", "Di tengah", "Konstan"], ans: 0, expl: "Hukum II Kepler: Kecepatan naik saat dekat bintang." },
+        { q: "Apa gaya sentripetal pada orbit planet?", options: ["Gaya Magnet", "Gaya Listrik", "Gaya Gravitasi", "Gaya Gesek"], ans: 2, expl: "Gravitasi matahari menarik planet agar tetap mengorbit." }
+      ],
+      'panas': [
+        { q: "Perpindahan panas tanpa partikel zat disebut...", options: ["Konduksi", "Konveksi", "Radiasi", "Evaporasi"], ans: 0, expl: "Contoh: Ujung besi dipanaskan, ujung lain ikut panas." },
+        { q: "Isolator adalah benda yang...", options: ["Menghantar panas baik", "Menghambat panas", "Memancarkan cahaya", "Menyerap dingin"], ans: 1, expl: "Plastik dan kayu adalah isolator." },
+        { q: "Panas matahari sampai ke bumi secara...", options: ["Konduksi", "Konveksi", "Radiasi", "Teleportasi"], ans: 2, expl: "Radiasi tidak butuh medium perantara (ruang hampa)." }
+      ],
+      'gelombang': [
+        { q: "Jarak antara dua puncak gelombang disebut...", options: ["Frekuensi", "Periode", "Panjang Gelombang", "Amplitudo"], ans: 2, expl: "Simbolnya Lambda (λ)." },
+        { q: "Bunyi TIDAK bisa merambat di...", options: ["Air", "Udara", "Ruang Hampa", "Besi"], ans: 2, expl: "Bunyi butuh medium, ruang hampa tidak ada medium." },
+        { q: "Damping (redaman) menyebabkan...", options: ["Amplitudo berkurang", "Frekuensi naik", "Gelombang cepat", "Air pasang"], ans: 0, expl: "Energi gelombang hilang karena gesekan." }
+      ],
+      'listrik': [
+        { q: "Partikel diam dalam medan magnet akan...", options: ["Membelok", "Berputar", "Tetap diam", "Meluncur"], ans: 2, expl: "Gaya Lorentz butuh kecepatan (v). Jika v=0, F=0." },
+        { q: "Arah gaya Lorentz ditentukan dengan kaidah...", options: ["Tangan Kiri", "Tangan Kanan", "Kaki Kanan", "Mata"], ans: 1, expl: "Jempol(v), Telunjuk(B), Tengah(F)." },
+        { q: "Muatan positif yang bergerak searah medan magnet (sudut 0) mengalami gaya...", options: ["Maksimum", "Nol", "Minimum", "Terbalik"], ans: 1, expl: "Sin(0) = 0, jadi Gayanya Nol." }
+      ]
+    };
+
+    // Variabel "Ingatan" Kuis
+    let q_topic = '';
+    let q_list = [];
+    let q_idx = 0;
+    let q_score = 0;
+
+    // FUNGSI 1: Mulai Kuis Baru
+    function startQuiz(topic) {
+      q_topic = topic;
+      q_list = quizDB[topic]; // Ambil soal sesuai topik
+      q_idx = 0;
+      q_score = 0;
+
+      // Update Tampilan Tombol Navigasi
+      document.querySelectorAll('.q-nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.textContent.toLowerCase().includes(topic)) btn.classList.add('active');
+      });
+
+      // Tampilkan Area Kuis
+      document.getElementById('quiz-start-msg').style.display = 'none';
+      document.getElementById('quiz-finish').style.display = 'none';
+      document.getElementById('quiz-active').style.display = 'block';
+
+      showQuestion(); // Munculkan soal no 1
+    }
+
+    // FUNGSI 2: Tampilkan Soal ke Layar
+    function showQuestion() {
+      const data = q_list[q_idx];
+      
+      // Update info header
+      document.getElementById('q-progress').innerText = `Soal ${q_idx + 1} / ${q_list.length}`;
+      document.getElementById('q-score-realtime').innerText = `Skor: ${Math.round(q_score)}`;
+      document.getElementById('q-text').innerText = data.q;
+      
+      // Sembunyikan panel feedback
+      document.getElementById('q-feedback').style.display = 'none';
+
+      // Buat tombol jawaban
+      const optsDiv = document.getElementById('q-options');
+      optsDiv.innerHTML = ''; // Hapus tombol lama
+      
+      data.options.forEach((optText, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = optText;
+        btn.onclick = () => answerQuiz(btn, i); // Saat diklik, cek jawaban
+        optsDiv.appendChild(btn);
+      });
+    }
+
+    // FUNGSI 3: Cek Jawaban User
+    function answerQuiz(btn, chosenIdx) {
+      const data = q_list[q_idx];
+      const allBtns = document.querySelectorAll('.option-btn');
+      
+      // Kunci semua tombol
+      allBtns.forEach(b => b.disabled = true);
+
+      const feedbackPanel = document.getElementById('q-feedback');
+      const explText = document.getElementById('q-explanation');
+
+      if (chosenIdx === data.ans) {
+        // BENAR
+        btn.classList.add('correct');
+        q_score += (100 / q_list.length);
+        explText.innerHTML = `<b style="color:#39FF14">BENAR! 🎉</b><br>${data.expl}`;
+      } else {
+        // SALAH
+        btn.classList.add('wrong');
+        allBtns[data.ans].classList.add('correct'); // Kasih tau yg benar
+        explText.innerHTML = `<b style="color:#ff0050">SALAH 😅</b><br>${data.expl}`;
+      }
+
+      // Update skor realtime
+      document.getElementById('q-score-realtime').innerText = `Skor: ${Math.round(q_score)}`;
+      
+      // Munculkan panel feedback
+      feedbackPanel.style.display = 'block';
+    }
+
+    // FUNGSI 4: Lanjut ke Soal Berikutnya / Selesai
+    function nextQuestion() {
+      q_idx++;
+      if (q_idx < q_list.length) {
+        showQuestion(); // Masih ada soal
+      } else {
+        finishQuiz(); // Soal habis
+      }
+    }
+
+    // FUNGSI 5: Selesai
+    function finishQuiz() {
+      document.getElementById('quiz-active').style.display = 'none';
+      document.getElementById('quiz-finish').style.display = 'block';
+      
+      // Efek hitung skor
+      const scoreDisplay = document.getElementById('final-score-display');
+      let tempScore = 0;
+      let finalScore = Math.round(q_score);
+      
+      let timer = setInterval(() => {
+        if (tempScore >= finalScore) {
+          clearInterval(timer);
+          scoreDisplay.innerText = finalScore;
+        } else {
+          tempScore++;
+          scoreDisplay.innerText = tempScore;
+        }
+      }, 20);
+    }
+
+    // FUNGSI 6: Restart
+    function restartQuiz() {
+      startQuiz(q_topic); // Mulai lagi topik yg sama
+    }
+    // --- LOGIKA HALAMAN TEORI ---
+    
+    // 1. Fungsi Accordion (Buka/Tutup)
+    function toggleTheory(id) {
+      const content = document.getElementById(id);
+      const parentBox = content.parentElement;
+      
+      // Tutup teori lain biar rapi
+      document.querySelectorAll('.theory-content').forEach(el => {
+        if (el.id !== id) {
+          el.style.maxHeight = null;
+          el.parentElement.classList.remove('active');
+        }
+      });
+
+      // Buka/Tutup yang diklik
+      if (parentBox.classList.contains('active')) {
+        parentBox.classList.remove('active');
+        content.style.maxHeight = null;
+      } else {
+        parentBox.classList.add('active');
+        content.style.maxHeight = content.scrollHeight + "px"; 
+      }
+    }
+
+    // 2. Fungsi Loncat ke Simulasi
+    function jumpToSim(simType) {
+      showSection('simulasi');
+      setTimeout(() => {
+        startSim(simType);
+        document.getElementById('simContainer').scrollIntoView({behavior: 'smooth'});
+      }, 500);
+    }
+
+    // --- KONTROL SIMULASI UMUM ---
+    const parabolaControls = document.getElementById("parabolaControls");
+    const pegasControls = document.getElementById("pegasControls");
+    const gravitasiControls = document.getElementById("gravitasiControls");
+    const orbitControls = document.getElementById("orbitControls");
+    const panasControls = document.getElementById("panasControls");
+    const gelombangControls = document.getElementById("gelombangControls");
+    const listrikControls = document.getElementById("listrikControls");
+
+    function startSim(type) {
+      if (currentAnimationId) { cancelAnimationFrame(currentAnimationId); currentAnimationId = null; }
+      refreshCanvas(); 
+      canvas.style.background = "#00000a";
+      ctx.globalAlpha = 1; 
+      [parabolaControls, pegasControls, gravitasiControls, orbitControls, panasControls, gelombangControls, listrikControls].forEach(c => c.style.display = "none");
+      simContainer.style.display = "block";
+      clearCanvas(); 
+
+      switch (type) {
+        case "parabola": simTitle.textContent = "Simulasi Gerak Parabola"; parabolaControls.style.display = "block"; setupParabola(); break;
+        case "pegas": simTitle.textContent = "Simulasi Osilasi Pegas"; pegasControls.style.display = "block"; setupPegas(); break;
+        case "gravitasi": simTitle.textContent = "Simulasi Gaya Gravitasi Antar Benda"; gravitasiControls.style.display = "block"; setupGravitasi(); break;
+        case "orbit": simTitle.textContent = "Simulasi Orbit Planet"; orbitControls.style.display = "block"; setupOrbit(); break;
+        case "panas": simTitle.innerHTML = "Simulasi Perpindahan Panas (Konduksi)<br><span style='font-size: 0.8em; color: #ffff00; font-weight: normal;'>👉 (Klik & Seret Mouse pada Layar Simulasi)</span>"; panasControls.style.display = "block"; setupPanas(); break;
+        
+        case "gelombang": simTitle.innerHTML = "Simulasi Gelombang Air <br><span style='font-size: 0.8em; color: #ffff00; font-weight: normal;'>👉 (Klik & Seret Mouse pada Layar Simulasi)</span>"; gelombangControls.style.display = "block"; canvas.style.background = "#000033"; setupGelombang(); break;
+        case "listrik": simTitle.textContent = "Listrik & Magnet (Gaya Lorentz)"; listrikControls.style.display = "block"; setupListrik(); break;
+      }
+    }
+
+    function clearCanvas() { ctx.fillStyle = "#00000a"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+    
+    // --- HELPER: Fungsi Gambar Benda Bersinar (Glow) ---
+    function drawGlowBody(body) {
+        ctx.beginPath();
+        ctx.shadowColor = body.color;
+        ctx.shadowBlur = 15;
+        ctx.arc(body.x, body.y, body.radius, 0, Math.PI * 2);
+        ctx.fillStyle = body.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+    }
+
+    // --- LOGIKA SIMULASI 1: GERAK PARABOLA (UPGRADE: LAUNCHER) ---
+    function setupParabola() {
+      const vIn = document.getElementById("velocity"), aIn = document.getElementById("angle");
+      const vVal = document.getElementById("vVal"), aVal = document.getElementById("aVal");
+      const startBtn = document.getElementById("startParabola");
+      let v0, angle, t, g = 9.8, scale = 10;
+      vIn.oninput = () => vVal.textContent = vIn.value; aIn.oninput = () => aVal.textContent = aIn.value;
+      
+      function drawParabolaBall(x, y) {
+        ctx.beginPath();
+        const ballX = x; const ballY = canvas.height - y - 20;
+        // UPGRADE: Warna Electric Lime
+        const gradient = ctx.createRadialGradient(ballX - 3, ballY - 3, 1, ballX, ballY, 10);
+        gradient.addColorStop(0, '#ADFF2F'); // Lime green center
+        gradient.addColorStop(1, '#39FF14'); // Electric Lime edge
+        ctx.fillStyle = gradient;
+        ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      // UPGRADE: Fungsi untuk menggambar landasan
+      function drawLauncher() {
+        ctx.fillStyle = "#39FF14"; // Electric Lime
+        ctx.shadowColor = "#39FF14";
+        ctx.shadowBlur = 15;
+        ctx.beginPath();
+        ctx.rect(0, canvas.height - 20, 20, 20); // Kotak di pojok
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      
+      function animateParabola() {
+        ctx.fillStyle = "rgba(0, 0, 10, 0.1)"; // Efek trail
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        drawLauncher(); // Gambar landasan setiap frame
+        
+        const rad = (angle * Math.PI) / 180, vx = v0 * Math.cos(rad), vy = v0 * Math.sin(rad);
+        const x_pos = vx * t, y_pos = (vy * t - 0.5 * g * t * t);
+        
+        drawParabolaBall(x_pos * scale, y_pos * scale);
+        
+        if (y_pos >= 0) { 
+            t += 0.05; 
+            currentAnimationId = requestAnimationFrame(animateParabola); 
+        } else { t = 0; }
+      }
+      
+      startBtn.onclick = () => { 
+        if (currentAnimationId) cancelAnimationFrame(currentAnimationId); 
+        v0 = parseFloat(vIn.value); angle = parseFloat(aIn.value); t = 0; 
+        animateParabola(); 
+      };
+      startBtn.click();
+    }
+
+
+    // --- LOGIKA SIMULASI 2: OSILASI PEGAS (UPGRADE: DINDING "TECH") ---
+    function setupPegas() {
+      const mIn = document.getElementById("mass"), kIn = document.getElementById("stiffness"), xIn = document.getElementById("displacement");
+      const mVal = document.getElementById("mVal"), kVal = document.getElementById("kVal"), xVal = document.getElementById("xVal");
+      const startBtn = document.getElementById("startPegas");
+      mIn.oninput = () => mVal.textContent = mIn.value; kIn.oninput = () => kVal.textContent = kIn.value; xIn.oninput = () => xVal.textContent = xIn.value;
+      let m, k, x0, pos, vel, accel;
+      const equilibrium = 150, wallX = 50, massSize = 40;
+      
+      function drawWall() {
+        // UPGRADE: Dinding "Braket Metalik" High-Tech
+        const wallGradient = ctx.createLinearGradient(0, 0, wallX, 0);
+        wallGradient.addColorStop(0, '#555');
+        wallGradient.addColorStop(0.5, '#eee');
+        wallGradient.addColorStop(1, '#666');
+        ctx.fillStyle = wallGradient;
+        ctx.fillRect(0, canvas.height / 2 - 50, wallX, 100);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, canvas.height / 2 - 50, wallX, 100);
+      }
+      
+      function drawSpring(currentPos) {
+        ctx.beginPath();
+        ctx.moveTo(wallX, canvas.height / 2);
+        const segments = 20;
+        const segmentWidth = (currentPos - wallX) / segments;
+        for (let i = 1; i < segments; i++) {
+          let yOffset = (i % 2 === 0) ? -15 : 15;
+          ctx.lineTo(wallX + i * segmentWidth, canvas.height / 2 + yOffset);
+        }
+        ctx.lineTo(currentPos, canvas.height / 2);
+        ctx.strokeStyle = "#aaa"; ctx.lineWidth = 3; ctx.lineCap = "round";
+        ctx.stroke();
+      }
+      
+      function drawMass(currentPos) {
+        const massX = currentPos, massY = (canvas.height / 2) - (massSize / 2);
+        const gradient = ctx.createLinearGradient(massX, massY, massX + massSize, massY + massSize);
+        gradient.addColorStop(0, '#00ffff');
+        gradient.addColorStop(1, '#ff00ff');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(massX, massY, massSize, massSize, 8); // Gunakan roundRect jika ada
+        ctx.fill();
+      }
+      
+      function animatePegas() {
+        clearCanvas();
+        
+        drawWall(); // Gambar dinding dulu
+        
+        let displacement = pos - equilibrium;
+        let force = -k * displacement;
+        accel = force / m; vel += accel * 0.1; vel *= 0.99; pos += vel * 0.1;
+        drawSpring(pos); drawMass(pos);
+        currentAnimationId = requestAnimationFrame(animatePegas);
+      }
+      
+      startBtn.onclick = () => {
+        if (currentAnimationId) cancelAnimationFrame(currentAnimationId);
+        m = parseFloat(mIn.value); k = parseFloat(kIn.value) / 10; x0 = parseFloat(xIn.value);
+        pos = equilibrium + x0; vel = 0;
+        animatePegas();
+      };
+      startBtn.click();
+    }
+
+
+    // --- SIMULASI 3 & 4 (GRAVITASI & ORBIT) ---
+    // (Menggunakan drawGlowBody, tidak perlu diubah)
+    function setupGravitasi() {
+      const m1In = document.getElementById("mass1"), vy1In = document.getElementById("vy1");
+      const m2In = document.getElementById("mass2"), vx2In = document.getElementById("vx2");
+      const m1Val = document.getElementById("m1Val"), vy1Val = document.getElementById("vy1Val");
+      const m2Val = document.getElementById("m2Val"), vx2Val = document.getElementById("vx2Val");
+      const startBtn = document.getElementById("startGravitasi"), resetBtn = document.getElementById("resetGravitasi");
+      m1In.oninput = () => m1Val.textContent = m1In.value; vy1In.oninput = () => vy1Val.textContent = vy1In.value;
+      m2In.oninput = () => m2Val.textContent = m2In.value; vx2In.oninput = () => vx2Val.textContent = vx2In.value;
+      const G = 0.5, dt = 0.5;
+      let body1 = {}, body2 = {};
+      function resetBodies() {
+        body1 = { x: canvas.width * 0.25, y: canvas.height * 0.5, vx: 0, vy: parseFloat(vy1In.value), mass: parseFloat(m1In.value), radius: 15, color: "#FFD700" };
+        body2 = { x: canvas.width * 0.75, y: canvas.height * 0.5, vx: parseFloat(vx2In.value), vy: 0, mass: parseFloat(m2In.value), radius: 10, color: "#00ffff" };
+      }
+      function updateGravitasi() {
+        ctx.fillStyle = "rgba(0, 0, 10, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const dx = body2.x - body1.x, dy = body2.y - body1.y;
+        const distanceSq = dx * dx + dy * dy, distance = Math.sqrt(distanceSq);
+        if (distance > (body1.radius + body2.radius)) {
+          const forceMagnitude = (G * body1.mass * body2.mass) / distanceSq;
+          const forceX = forceMagnitude * (dx / distance), forceY = forceMagnitude * (dy / distance);
+          const accel1X = forceX / body1.mass, accel1Y = forceY / body1.mass;
+          const accel2X = -forceX / body2.mass, accel2Y = -forceY / body2.mass; 
+          body1.vx += accel1X * dt; body1.vy += accel1Y * dt;
+          body2.vx += accel2X * dt; body2.vy += accel2Y * dt;
+        } else {
+           [body1.vx, body2.vx] = [body2.vx, body1.vx]; [body1.vy, body2.vy] = [body2.vy, body1.vy];
+        }
+        body1.x += body1.vx * dt; body1.y += body1.vy * dt;
+        body2.x += body2.vx * dt; body2.y += body2.vy * dt;
+        drawGlowBody(body1); drawGlowBody(body2);
+        currentAnimationId = requestAnimationFrame(updateGravitasi);
+      }
+      startBtn.onclick = () => { if (currentAnimationId) cancelAnimationFrame(currentAnimationId); resetBodies(); updateGravitasi(); };
+      resetBtn.onclick = () => { if (currentAnimationId) cancelAnimationFrame(currentAnimationId); resetBodies(); clearCanvas(); drawGlowBody(body1); drawGlowBody(body2); };
+      resetBodies(); drawGlowBody(body1); drawGlowBody(body2);
+    }
+    function setupOrbit() {
+      const sunMassIn = document.getElementById("sunMass"), planetDistIn = document.getElementById("planetDist"), planetVelIn = document.getElementById("planetVel");
+      const sunMassVal = document.getElementById("sunMassVal"), planetDistVal = document.getElementById("planetDistVal"), planetVelVal = document.getElementById("planetVelVal");
+      const startBtn = document.getElementById("startOrbit"), resetBtn = document.getElementById("resetOrbit");
+      sunMassIn.oninput = () => sunMassVal.textContent = sunMassIn.value; planetDistIn.oninput = () => planetDistVal.textContent = planetDistIn.value; planetVelIn.oninput = () => planetVelVal.textContent = planetVelIn.value;
+      const G = 0.1, dt = 0.5;
+      let sun = {}, planet = {};
+      let trail = []; const maxTrailLength = 200;
+      function resetOrbit() {
+        sun = { x: canvas.width / 2, y: canvas.height / 2, vx: 0, vy: 0, mass: parseFloat(sunMassIn.value), radius: 15, color: "#FFD700" };
+        planet = { x: sun.x + parseFloat(planetDistIn.value), y: sun.y, vx: 0, vy: -parseFloat(planetVelIn.value), mass: 50, radius: 5, color: "#00ffff" };
+        trail = [];
+      }
+      function drawTrail() {
+        ctx.lineWidth = 2;
+        for (let i = trail.length - 2; i >= 0; i--) {
+            const alpha = (i / trail.length) * 0.5;
+            ctx.beginPath();
+            ctx.moveTo(trail[i+1].x, trail[i+1].y);
+            ctx.lineTo(trail[i].x, trail[i].y);
+            ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+            ctx.stroke();
+        }
+      }
+      function updateOrbit() {
+        ctx.fillStyle = "rgba(0, 0, 10, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const dx = planet.x - sun.x, dy = planet.y - sun.y;
+        const distanceSq = dx * dx + dy * dy, distance = Math.sqrt(distanceSq);
+        if (distance > (sun.radius + planet.radius)) {
+          const forceMagnitude = (G * sun.mass * planet.mass) / distanceSq;
+          const forceX = forceMagnitude * (dx / distance), forceY = forceMagnitude * (dy / distance);
+          const accelPlanetX = forceX / planet.mass, accelPlanetY = forceY / planet.mass;
+          planet.vx -= accelPlanetX * dt; planet.vy -= accelPlanetY * dt;
+        } else {
+          planet.vx = planet.vy = 0;
+        }
+        planet.x += planet.vx * dt; planet.y += planet.vy * dt;
+        trail.push({ x: planet.x, y: planet.y });
+        if (trail.length > maxTrailLength) trail.shift();
+        drawTrail(); drawGlowBody(sun); drawGlowBody(planet);
+        currentAnimationId = requestAnimationFrame(updateOrbit);
+      }
+      startBtn.onclick = () => { if (currentAnimationId) cancelAnimationFrame(currentAnimationId); resetOrbit(); updateOrbit(); };
+      resetBtn.onclick = () => { if (currentAnimationId) cancelAnimationFrame(currentAnimationId); resetOrbit(); clearCanvas(); drawGlowBody(sun); drawGlowBody(planet); };
+      resetOrbit(); drawGlowBody(sun); drawGlowBody(planet);
+    }
+
+    // --- LOGIKA SIMULASI 5: PERPINDAHAN PANAS (Sudah "WOW") ---
+    function setupPanas() {
+      const kIn = document.getElementById("kPanas"), kVal = document.getElementById("kPanasVal");
+      const resetBtn = document.getElementById("resetPanas");
+      const toolRadios = document.querySelectorAll('input[name="tool"]');
+      let k = parseFloat(kIn.value), tool = 'heat', mouseIsDown = false;
+      const cellSize = 10, cols = Math.floor(canvas.width / cellSize), rows = Math.floor(canvas.height / cellSize);
+      let grid, nextGrid;
+      function initGrid() { grid = new Array(cols).fill(0).map(() => new Array(rows).fill(0)); nextGrid = new Array(cols).fill(0).map(() => new Array(rows).fill(0)); }
+      function tempToColor(temp) { temp = Math.max(0, Math.min(100, temp)); const hue = 240 - (temp * 2.4); return `hsl(${hue}, 100%, 50%)`; }
+      function drawGrid() { for (let i = 0; i < cols; i++) { for (let j = 0; j < rows; j++) { ctx.fillStyle = tempToColor(grid[i][j]); ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize); } } }
+      function updatePanas() {
+        for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) nextGrid[i][j] = grid[i][j];
+        for (let i = 1; i < cols - 1; i++) {
+          for (let j = 1; j < rows - 1; j++) {
+            const t_self = grid[i][j]; const t_neighbors = (grid[i+1][j] + grid[i-1][j] + grid[i][j+1] + grid[i][j-1]);
+            let newTemp = t_self + k * ((t_neighbors / 4) - t_self);
+            newTemp *= 0.999; nextGrid[i][j] = newTemp;
+          }
+        }
+        [grid, nextGrid] = [nextGrid, grid]; drawGrid();
+        currentAnimationId = requestAnimationFrame(updatePanas);
+      }
+      kIn.oninput = () => { k = parseFloat(kIn.value); kVal.textContent = k.toFixed(2); };
+      toolRadios.forEach(radio => { radio.onchange = () => { tool = radio.value; }; });
+      resetBtn.onclick = initGrid;
+      function addSource(e) {
+        const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const i = Math.floor(x / cellSize), j = Math.floor(y / cellSize);
+        if (i > 1 && i < cols-2 && j > 1 && j < rows-2) {
+          const value = (tool === 'heat') ? 100 : 0;
+          for(let dx = -1; dx <= 1; dx++) { for(let dy = -1; dy <= 1; dy++) { grid[i+dx][j+dy] = value; } }
+        }
+      }
+      canvas.addEventListener('mousedown', (e) => { mouseIsDown = true; addSource(e); });
+      canvas.addEventListener('mouseup', () => { mouseIsDown = false; });
+      canvas.addEventListener('mousemove', (e) => { if (mouseIsDown) addSource(e); });
+      canvas.addEventListener('mouseleave', () => { mouseIsDown = false; });
+      initGrid(); updatePanas();
+    }
+
+    // --- LOGIKA SIMULASI 6: GELOMBANG AIR (Sudah "WOW") ---
+    function setupGelombang() {
+      const dampIn = document.getElementById("damping"), dampVal = document.getElementById("dampVal");
+      let damping = parseFloat(dampIn.value), mouseIsDown = false;
+      const cellSize = 5, cols = Math.floor(canvas.width / cellSize), rows = Math.floor(canvas.height / cellSize);
+      let heightGrid, velocityGrid;
+      function initGrid() { heightGrid = new Array(cols).fill(0).map(() => new Array(rows).fill(0)); velocityGrid = new Array(cols).fill(0).map(() => new Array(rows).fill(0)); }
+      function heightToColor(height) { const h = Math.max(-50, Math.min(50, height)); const lightness = 50 + h; return `hsl(210, 100%, ${lightness}%)`; }
+      function drawGrid() { for (let i = 0; i < cols; i++) { for (let j = 0; j < rows; j++) { ctx.fillStyle = heightToColor(heightGrid[i][j]); ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize); } } }
+      let nextHeightGrid = new Array(cols).fill(0).map(() => new Array(rows).fill(0));
+      function updateGelombang() {
+        for (let i = 1; i < cols - 1; i++) {
+          for (let j = 1; j < rows - 1; j++) {
+            const avgHeight = (heightGrid[i-1][j] + heightGrid[i+1][j] + heightGrid[i][j-1] + heightGrid[i][j+1]) / 4;
+            const force = (avgHeight - heightGrid[i][j]) * 0.5; velocityGrid[i][j] += force;
+          }
+        }
+        for (let i = 1; i < cols - 1; i++) {
+          for (let j = 1; j < rows - 1; j++) {
+            velocityGrid[i][j] *= damping; nextHeightGrid[i][j] = heightGrid[i][j] + velocityGrid[i][j];
+          }
+        }
+        [heightGrid, nextHeightGrid] = [nextHeightGrid, heightGrid];
+        drawGrid();
+        currentAnimationId = requestAnimationFrame(updateGelombang);
+      }
+      dampIn.oninput = () => { damping = parseFloat(dampIn.value); dampVal.textContent = damping.toFixed(3); };
+      function addSplash(e) {
+        const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const i = Math.floor(x / cellSize), j = Math.floor(y / cellSize);
+        for (let offsetX = -2; offsetX <= 2; offsetX++) {
+          for (let offsetY = -2; offsetY <= 2; offsetY++) {
+            if (i + offsetX > 0 && i + offsetX < cols-1 && j + offsetY > 0 && j + offsetY < rows-1) {
+              heightGrid[i+offsetX][j+offsetY] = 100;
+            }
+          }
+        }
+      }
+      canvas.addEventListener('mousedown', (e) => { mouseIsDown = true; addSplash(e); });
+      canvas.addEventListener('mouseup', () => { mouseIsDown = false; });
+      canvas.addEventListener('mousemove', (e) => { if (mouseIsDown) addSplash(e); });
+      canvas.addEventListener('mouseleave', () => { mouseIsDown = false; });
+      initGrid(); updateGelombang();
+    }
+    
+    // --- LOGIKA SIMULASI 7: LISTRIK & MAGNET (GLOW LEBIH "GONG") ---
+    function setupListrik() {
+      const bIn = document.getElementById("bField"), bVal = document.getElementById("bVal");
+      const mIn = document.getElementById("mass_L"), mVal = document.getElementById("mVal_L");
+      const chargeRadios = document.querySelectorAll('input[name="charge"]');
+      const clearBtn = document.getElementById("clearParticles");
+      let B = parseFloat(bIn.value), mass = parseFloat(mIn.value);
+      let charge = parseFloat(document.querySelector('input[name="charge"]:checked').value);
+      let particles = [], isDragging = false, startPos = { x: 0, y: 0 }, currentPos = { x: 0, y: 0 };
+      
+      function drawParticle(p) {
+        ctx.beginPath();
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 25; // UPGRADE: Glow lebih besar!
+        ctx.arc(p.x, p.y, p.mass / 2 + 1, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      function drawBField() {
+        ctx.strokeStyle = "rgba(0, 255, 255, 0.1)"; ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 30) {
+          for (let y = 0; y < canvas.height; y += 30) {
+            ctx.beginPath();
+            ctx.moveTo(x - 5, y - 5); ctx.lineTo(x + 5, y + 5);
+            ctx.moveTo(x - 5, y + 5); ctx.lineTo(x + 5, y - 5);
+            ctx.stroke();
+          }
+        }
+      }
+      function drawTrail(trail, colorData) {
+        if (trail.length < 2) return;
+        ctx.lineWidth = 2;
+        const { h, s, l } = colorData;
+        for (let i = trail.length - 2; i >= 0; i--) {
+            const alpha = (i / trail.length); // Jejak lebih terang
+            ctx.beginPath();
+            ctx.moveTo(trail[i+1].x, trail[i+1].y);
+            ctx.lineTo(trail[i].x, trail[i].y);
+            ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${alpha})`;
+            ctx.stroke();
+        }
+      }
+      function updateListrik() {
+        ctx.fillStyle = "rgba(0, 0, 10, 0.3)"; // Fade lebih lambat sedikit
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawBField();
+        
+        if (isDragging) {
+          ctx.beginPath();
+          ctx.moveTo(startPos.x, startPos.y); ctx.lineTo(currentPos.x, currentPos.y);
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.5)"; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
+          ctx.stroke(); ctx.setLineDash([]);
+        }
+        
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          const Fx = p.q * p.vy * B, Fy = p.q * -p.vx * B;
+          const ax = Fx / p.m, ay = Fy / p.m;
+          p.vx += ax * 0.1; p.vy += ay * 0.1;
+          p.x += p.vx * 0.1; p.y += p.vy * 0.1;
+          p.trail.push({ x: p.x, y: p.y });
+          if (p.trail.length > 100) p.trail.shift();
+          
+          drawTrail(p.trail, p.baseColor); 
+          drawParticle(p);
+          
+          if (p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+            particles.splice(i, 1);
+          }
+        }
+        currentAnimationId = requestAnimationFrame(updateListrik);
+      }
+      bIn.oninput = () => { B = parseFloat(bIn.value); bVal.textContent = B.toFixed(1); };
+      mIn.oninput = () => { mass = parseFloat(mIn.value); mVal.textContent = mass.toFixed(0); };
+      chargeRadios.forEach(radio => { radio.onchange = () => { charge = parseFloat(radio.value); }; });
+      clearBtn.onclick = () => { particles = []; };
+      function getMousePos(e) { const rect = canvas.getBoundingClientRect(); return { x: e.clientX - rect.left, y: e.clientY - rect.top }; }
+      canvas.addEventListener('mousedown', (e) => { isDragging = true; startPos = getMousePos(e); currentPos = getMousePos(e); });
+      canvas.addEventListener('mousemove', (e) => { if (isDragging) currentPos = getMousePos(e); });
+      canvas.addEventListener('mouseup', (e) => {
+        isDragging = false;
+        const endPos = getMousePos(e);
+        const vx = (endPos.x - startPos.x) * 0.1, vy = (endPos.y - startPos.y) * 0.1;
+        const baseColorData = (charge > 0) ? { h: 0, s: 100, l: 70 } : { h: 200, s: 100, l: 70 };
+        particles.push({
+          x: startPos.x, y: startPos.y, vx: vx, vy: vy, q: charge, m: mass,
+          color: `hsl(${baseColorData.h}, ${baseColorData.s}%, ${baseColorData.l}%)`,
+          baseColor: baseColorData,
+          trail: []
+        });
+      });
+      updateListrik();
+    }
+
+
+    // --- JS UNTUK KONTAK ---
+    function kirimPesan(e) {
+      e.preventDefault(); // Mencegah halaman refresh/blank
+      
+      const btn = document.getElementById('btn-kirim');
+      const textAsli = btn.innerText;
+
+      // Ubah tombol jadi loading
+      btn.innerText = "⏳ Sedang Mengirim...";
+      btn.style.opacity = "0.7";
+      
+      // Simulasi sukses setelah 2 detik
+      setTimeout(() => {
+        btn.innerText = "✅ Terkirim! Terima kasih.";
+        btn.style.background = "linear-gradient(90deg, #00ffff, #007777)"; // Jadi biru
+        btn.style.opacity = "1";
+        
+        // Reset form (kosongkan input)
+        e.target.reset();
+
+        // Kembalikan tombol seperti semula setelah 3 detik
+        setTimeout(() => {
+          btn.innerText = textAsli;
+          btn.style.background = "linear-gradient(90deg, #39FF14, #008f06)"; // Balik hijau
+        }, 3000);
+      }, 2000);
+    }
+
+  </script>
+</body>
+</html>

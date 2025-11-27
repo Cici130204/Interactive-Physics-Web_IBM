@@ -1,0 +1,141 @@
+:root{
+    --bg1: #00c6ff;
+    --bg2: #0072ff;
+    --muted: #062a2a;
+    --card: rgba(255,255,255,0.9);
+    --accent: #ffd166;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background: linear-gradient(to right,var(--bg2),var(--bg1));
+    color:#fff;
+  }
+  nav{
+    position:fixed; top:0; left:0; right:0; height:64px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(0,0,0,0.25); backdrop-filter: blur(6px); z-index:50;
+  }
+  nav ul{display:flex; gap:28px; list-style:none; padding:0; margin:0}
+  nav ul li{cursor:pointer; font-weight:700; padding:8px 12px}
+  nav ul li:hover{color:var(--accent); transform:scale(1.03)}
+  
+  .section{
+    min-height:100vh;
+    padding-top:84px;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    gap:18px; padding-bottom:40px;
+  }
+  .section h1{margin-top:18px; font-size:2.2rem; text-align:center}
+  .btn{background:var(--accent); color:#000; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:700}
+  .btn:hover{transform:scale(1.03)}
+  
+  .sim-list{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; margin-top:18px}
+  .sim-item{background:rgba(255,255,255,0.15); color:#000; padding:18px 32px; border-radius:12px; cursor:pointer; backdrop-filter: blur(6px); font-weight:600}
+  .sim-item:hover{background:#fff; transform:scale(1.03)}
+  
+  .sim-container{width:95%; max-width:1100px; margin-top:18px}
+  .sim-area{background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06)); padding:18px; border-radius:12px}
+  
+  .controls{margin-top:12px; display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+  .sim-btn{background:#0066ff; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer}
+  .sim-btn:hover{background:#004bb5}
+  
+  .card{background:var(--card); color:var(--muted); padding:18px; border-radius:12px; max-width:800px; text-align:left}
+  .controls3d{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:10px}
+  
+  footer{padding:18px; text-align:center; background: rgba(0,0,0,0.12); color:#fff}
+  @media (max-width:900px){
+    .sim-item{padding:14px 18px}
+    .sim-container{width:95%}
+  }
+
+
+  #teori {
+  padding: 40px 20px;
+  background: #f5f7fb;
+  border-radius: 20px;
+  margin-top: 30px;
+}
+
+/* Judul Utama */
+#teori h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #1a237e;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+/* Kotak Teori */
+.content-box {
+  background: #ffffff;
+  padding: 25px;
+  margin: 20px auto;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  border-left: 6px solid #3f51b5;
+}
+
+/* Hover efek glowing */
+.content-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(63, 81, 181, 0.25);
+}
+
+/* Judul Bab */
+.content-box h2 {
+  font-size: 1.7rem;
+  color: #3f51b5;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Paragraf */
+.content-box p {
+  line-height: 1.7;
+  color: #444;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+/* List */
+.content-box ul {
+  margin-left: 20px;
+}
+
+.content-box ul li {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Jika kamu punya item SIM seperti menu simulasi */
+.sim-item {
+  background: #fff;
+  padding: 15px;
+  border-radius: 14px;
+  margin: 12px 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: 2px solid #ddd;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.sim-item:hover {
+  background: #e8eaf6;
+  transform: translateX(5px);
+  border-color: #3f51b5;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  #teori h1 {
+    font-size: 2rem;
+  }
+  .content-box {
+    padding: 20px;
+  }
+}
+  
